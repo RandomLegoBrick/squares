@@ -3,7 +3,6 @@ from pygame.locals import *
 from modules.constants import *
 from modules import player, blocks, bullets
 
-
 pygame.init()
 width, height = 1280, 720
 screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
@@ -11,6 +10,8 @@ screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 running = True
 inputs = {}
+inputTime = {}
+doubleInput = {}
 
 mapBlocks = [blocks.Block(b, (200, 200, 200)) for b in [(width/2 - 250, height/2 - 10, 500, 20)]]
 players = [player.Player((width/2 - 150, 100), (255, 50, 50), [K_w, K_a, K_s, K_d], bullets.Bullet, "Matthew"), player.Player((width/2 + 150, 100), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bullets.Bullet, "Justin")]
@@ -31,6 +32,10 @@ while running:
             width, height = e.w, e.h
         elif e.type == KEYDOWN:
             inputs[e.key] = True
+            if e.key in inputTime and pygame.time.get_ticks() - inputTime[e.key] < 200:
+                doubleInput[e.key] = True
+            else:
+                inputTime[e.key] = pygame.time.get_ticks()
         elif e.type == KEYUP and e.key in inputs:
             del inputs[e.key]
     
@@ -45,7 +50,7 @@ while running:
 
     for n, p in enumerate(players):
         p.draw(screen)
-        p.update(mapBlocks, inputs)
+        p.update(mapBlocks, inputs, doubleInput)
         p.handleBullets(inputs, bulletList)
 
         if(p.health <= 0):
@@ -54,6 +59,15 @@ while running:
     if len(players) == 1:
         textCentered(f"{players[0].name} wins!", width/2, height/2, 100, (0, 0, 0))
 
+    remove = []
+    for k in doubleInput:
+        if doubleInput[k] == True:
+            remove.append(k)
+    for k in remove:
+        del doubleInput[k]
+        del inputTime[k]
+            
+    
     pygame.display.flip()
     clock.tick(60)
 

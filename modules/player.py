@@ -52,7 +52,7 @@ class Player():
         #health bar
         pygame.draw.rect(screen, (0, 100, 50), (self.x + self.w/2 - self.health/4, self.y - 20, self.health/2, 10))
 
-    def update(self, blocks, inputs):
+    def update(self, blocks, inputs, doubleInput):
         if self.y > 10000:
             self.respawn()
             self.health -= 50
@@ -74,10 +74,13 @@ class Player():
         # move then check for collisions on the x axis
         if self.inputMap[1] in inputs:
             self.xVel -= self.acceleration
+            if self.inputMap[1] in doubleInput: self.x -= 100
             self.dir = 0
         if self.inputMap[3] in inputs:
             self.xVel += self.acceleration
+            if self.inputMap[3] in doubleInput: self.x += 100
             self.dir = -math.pi
+        
         
         self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
         self.x += self.xVel
