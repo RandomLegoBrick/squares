@@ -1,15 +1,16 @@
 ## Work In Progress
 A smash-bros-esque fighting game writen in python using pygame.
 
-Todo:
+Todo (Will add more over time):
 - Gameplay
     - [x] Movement
     - [x] Collisions
     - [x] Bullets
-    - [ ] Screen Shake
+    - [x] Screen Shake
     - [ ] Knockback
     - [ ] Dash & Jump animations
-    - [ ] Camera & Paralax Background
+    - [x] Camera
+    - [x] Paralax Background
 - Art
     - Map: Grassy
         - [x] Main Island

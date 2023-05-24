@@ -2,13 +2,16 @@ import pygame
 from pygame.locals import *
 from modules.constants import *
 from modules import player, blocks, bullets
+from modules.functions import *
+import random
 
 ### Enviornment Variables ###
 pygame.init()
 width, height = 1920, 1080
-screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+window = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 running = True
+screen = pygame.Surface((width, height))
 
 ### Input Variables ###
 inputs = {}
@@ -28,12 +31,19 @@ for current_map in map_textures:
 for current_player in player_textures:
     player_textures[current_player] = load(player_textures[current_player], pixel_size=6)
 
+### Camera ###
+class camera():
+    x = 0
+    y = 0
+    shake = 0
+
 ### Game State Variables ###
 mapBlocks = [blocks.Block((width/2 - 32 * PIXEL_SIZE, height/2, 64 * PIXEL_SIZE, PIXEL_SIZE)), 
              blocks.Block((width/2 - 31 * PIXEL_SIZE, height/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
              blocks.Block((width/2 - 29 * PIXEL_SIZE, height/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
              blocks.Block((width/2 - 24 * PIXEL_SIZE, height/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),]
-players = [player.Player((width/2 - 150, 100), (255, 50, 50), [K_w, K_a, K_s, K_d], bullets.Bullet, "orange", player_textures["orange"]), player.Player((width/2 + 150, 100), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bullets.Bullet, "duck", player_textures["duck"])]
+players = [player.Player((width/2 - 150, 100), (255, 50, 50), [K_w, K_a, K_s, K_d], bullets.Bullet, "orange", player_textures["orange"], camera), 
+           player.Player((width/2 + 150, 100), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bullets.Bullet, "duck", player_textures["duck"], camera)]
 bulletList = []
 
 def textCentered(msg, x, y, size, color):
@@ -68,6 +78,7 @@ while running:
         elif e.type == KEYUP and e.key in inputs:
             del inputs[e.key]
     
+    window.fill(BACKGROUND)
     screen.fill(BACKGROUND)
     
     drawMap()
@@ -94,8 +105,20 @@ while running:
     for k in remove:
         del doubleInput[k]
         del inputTime[k]
-            
     
+    ## Get average position of all players
+    playerPos = [0, 0]
+    for p in players:
+        playerPos[0] += p.x
+        playerPos[1] += p.y
+    playerPos = [playerPos[0]/len(players), playerPos[1]/len(players)]
+    
+    camera.shake = int(camera.shake)
+    camera.x = lerp(camera.x, -playerPos[0] + width/2, 0.1) + random.randint(-camera.shake, camera.shake)
+    camera.y = lerp(camera.y,  -playerPos[1] + height/2, 0.1) + random.randint(-camera.shake, camera.shake)
+    camera.shake = clamp(camera.shake - 0.1, 0, 10)
+
+    window.blit(screen, (camera.x, camera.y))
     pygame.display.flip()
     clock.tick(60)
 

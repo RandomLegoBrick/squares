@@ -1,19 +1,15 @@
 import pygame
 from modules.constants import *
 import math
-
-def clamp(value, bottom, top):
-    return max(bottom, min(value, top))
-
-def dist(x1, y1, x2, y2):
-    return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+from modules.functions import *
 
 class Player():
-    def __init__(self, startPos, color, inputMap, bulletClass, name, image):
+    def __init__(self, startPos, color, inputMap, bulletClass, name, image, camera):
         self.startX = startPos[0]
         self.startY = startPos[1]
         self.name = name.capitalize()
         self.image = image
+        self.camera = camera
 
         # position and velocity
         self.x = self.startX
@@ -66,6 +62,10 @@ class Player():
 
         for block in blocks:
             if pygame.Rect(self.x, self.y, self.w, self.h).colliderect(block.rect):
+                
+                if self.yVel > 25:
+                    self.camera.shake += self.yVel/2
+
                 self.yVel = 0
 
                 if self.y < block.rect.y:
@@ -114,6 +114,7 @@ class Player():
             if b.shotBy != self and pygame.Rect(self.x, self.y, self.w, self.h).collidepoint(b.x, b.y):
                 bulletList.remove(b)
                 self.health -= 5
+                self.camera.shake += 5
         
         if self.inputMap[2] in inputs and self.reload < 0:
             bulletList.append(self.bulletClass(self.x+self.w/2, self.y+self.h/2, self.dir, self))
