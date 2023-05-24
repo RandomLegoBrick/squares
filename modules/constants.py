@@ -17,6 +17,11 @@ player_textures = {
     "orange" : "assets/players/orange.png",
 }
 
+weapon_textures = {
+    "bullet_standard" : "assets/weapons/bullets/bullet_standard.png",
+    "grenade_standard" : "assets/weapons/grenades/grenade_standard.png",
+}
+
 BULLET_STAT_TABLE = {
     "standard" : {
         "velocity" : 50,

@@ -7,11 +7,12 @@ import random
 
 ### Enviornment Variables ###
 pygame.init()
-width, height = 1920, 1080
-window = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 running = True
-screen = pygame.Surface((width, height))
+width, height = 1920, 1080
+screen = pygame.Surface((width, height)).convert_alpha()
+
 
 ### Input Variables ###
 inputs = {}
@@ -26,10 +27,14 @@ def load(path, pixel_size=PIXEL_SIZE):
 
 for current_map in map_textures:
     for texture in map_textures[current_map]:
-        map_textures[current_map][texture] = load(map_textures[current_map][texture])
+        map_textures[current_map][texture] = load(map_textures[current_map][texture], pixel_size=PIXEL_SIZE*2 if texture == "background" else PIXEL_SIZE)
 
 for current_player in player_textures:
     player_textures[current_player] = load(player_textures[current_player], pixel_size=6)
+
+for current_weapon in weapon_textures:
+    weapon_textures[current_weapon] = load(weapon_textures[current_weapon], pixel_size=4)
+bullets.init(weapon_textures)
 
 ### Camera ###
 class camera():
@@ -38,12 +43,12 @@ class camera():
     shake = 0
 
 ### Game State Variables ###
-mapBlocks = [blocks.Block((960 - 32 * PIXEL_SIZE, 540, 64 * PIXEL_SIZE, PIXEL_SIZE)), 
-             blocks.Block((960 - 31 * PIXEL_SIZE, 540 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
-             blocks.Block((960 - 29 * PIXEL_SIZE, 540 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
-             blocks.Block((960 - 24 * PIXEL_SIZE, 540 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),]
-players = [player.Player((960 - 150, 300), (255, 50, 50), [K_w, K_a, K_s, K_d], bullets.Bullet, "blueberry", player_textures["blueberry"], camera), 
-           player.Player((960 + 150, 300), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bullets.Bullet, "duck", player_textures["duck"], camera)]
+mapBlocks = [blocks.Block((width/2 - 32 * PIXEL_SIZE, height/2, 64 * PIXEL_SIZE, PIXEL_SIZE)), 
+             blocks.Block((width/2 - 31 * PIXEL_SIZE, height/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
+             blocks.Block((width/2 - 29 * PIXEL_SIZE, height/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
+             blocks.Block((width/2 - 24 * PIXEL_SIZE, height/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),]
+players = [player.Player((width/2 - 150, 300), (255, 50, 50), [K_w, K_a, K_s, K_d], bullets.Bullet, "blueberry", player_textures["blueberry"], camera), 
+           player.Player((width/2 + 150, 300), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bullets.Bullet, "duck", player_textures["duck"], camera)]
 bulletList = []
 
 def textCentered(msg, x, y, size, color):
@@ -55,7 +60,7 @@ def textCentered(msg, x, y, size, color):
 
 
 def drawMap():
-    screen.blit(map_textures["grassy"]["main"], (960-(32 * PIXEL_SIZE), 540-(3 * PIXEL_SIZE)))
+    screen.blit(map_textures["grassy"]["main"], (width/2-(32 * PIXEL_SIZE), height/2-(3 * PIXEL_SIZE)))
 
 while running:
     for e in pygame.event.get():
@@ -96,7 +101,7 @@ while running:
             players.pop(n)
     
     if len(players) == 1:
-        textCentered(f"{players[0].name} wins!", 960, 300, 100, (0, 0, 0))
+        textCentered(f"{players[0].name} wins!", width/2, 300, 100, (0, 0, 0))
 
     remove = []
     for k in doubleInput:
