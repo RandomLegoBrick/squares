@@ -2,6 +2,32 @@ import pygame
 from modules.constants import *
 import math
 from modules.functions import *
+from random import randint
+
+class Particle():
+    def __init__(self, x, y, color=(78, 164, 95)):
+        self.size = randint(6, 8)
+        self.x = x
+        self.y = y-self.size
+        self.groundY = y
+
+        self.yVel = -randint(0, 8)
+        self.xvel = randint(-3, 3)
+        self.color = color
+        self.life = 100
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
+    
+    def update(self):
+        self.y += self.yVel
+        self.yVel += GRAVITY
+
+        if self.y >= self.groundY-self.size:
+            self.yVel = 0
+            self.y = self.groundY - self.size
+        
+        self.life -= 1
 
 class Player():
     def __init__(self, startPos, color, inputMap, bulletClass, name, image, camera):
@@ -37,7 +63,11 @@ class Player():
         self.reloadTime = 10
         self.dir = 0
         self.health = 100
-        
+        self.angle = 0
+        self.angleTo = 0
+        self.particles = []
+        self.frame = 0
+
     def respawn(self):
         self.x = self.startX
         self.y = self.startY
@@ -45,13 +75,25 @@ class Player():
         self.xVel = 0
 
     def draw(self, screen):
-        playerImg = pygame.transform.flip(self.image, False if self.dir < 0 else True, False)
+        for p in reversed(self.particles):
+            p.draw(screen)
+            p.update()
+            if p.life < 0:
+                self.particles.remove(p)
 
-        screen.blit(playerImg, (self.x, self.y))
+        playerImg = self.image.copy()
+        if int(self.angle)%360 != 0: playerImg = pygame.transform.rotate(playerImg, int(self.angle))
+        playerImg = pygame.transform.flip(playerImg, False if self.dir < 0 else True, False)
+        
+        
+        screen.blit(playerImg, ((self.x - playerImg.get_width()/2) + self.w/2, (self.y - playerImg.get_height()/2) + self.h/2))
         #health bar
         pygame.draw.rect(screen, (0, 100, 50), (self.x + self.w/2 - self.health/4, self.y - 20, self.health/2, 10))
 
     def update(self, blocks, inputs, doubleInput):
+        self.angle = lerp(self.angle, self.angleTo, 0.15)
+        self.frame += 1
+
         if self.y > 10000:
             self.respawn()
             self.health -= 50
@@ -71,17 +113,27 @@ class Player():
                 if self.y < block.rect.y:
                     self.y = block.rect.y - self.h
                     self.onBlock = True
+                    
                 else:
                     self.y = block.rect.y + block.rect.h
 
         # move then check for collisions on the x axis
         if self.inputMap[1] in inputs:
+            if self.frame%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
             self.xVel -= self.acceleration
-            if self.inputMap[1] in doubleInput: self.x -= 100
+            if self.inputMap[1] in doubleInput: 
+                self.x -= 200
+                self.camera.shake += 5
+                self.angleTo -= 360
             self.dir = 0
         if self.inputMap[3] in inputs:
+            if self.frame%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
+
             self.xVel += self.acceleration
-            if self.inputMap[3] in doubleInput: self.x += 100
+            if self.inputMap[3] in doubleInput: 
+                self.x += 200
+                self.camera.shake += 5
+                self.angleTo -= 360
             self.dir = -math.pi
         
         
