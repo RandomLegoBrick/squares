@@ -28,6 +28,6 @@ class Bullet():
     def draw(self, screen: pygame.Surface):
         screen.blit(self.img, (self.x-self.radius, self.y-self.radius))
     
-    def update(self):
-        self.x -= math.cos(self.angle) * self.velocity
-        self.y -= math.sin(self.angle) * self.velocity
+    def update(self, dt):
+        self.x -= math.cos(self.angle) * self.velocity * dt
+        self.y -= math.sin(self.angle) * self.velocity * dt

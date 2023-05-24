@@ -19,9 +19,9 @@ class Particle():
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
     
-    def update(self):
-        self.y += self.yVel
-        self.yVel += GRAVITY
+    def update(self, dt):
+        self.y += self.yVel * dt
+        self.yVel += GRAVITY * dt
 
         if self.y >= self.groundY-self.size:
             self.yVel = 0
@@ -74,10 +74,10 @@ class Player():
         self.yVel = 0
         self.xVel = 0
 
-    def draw(self, screen):
+    def draw(self, screen, dt):
         for p in reversed(self.particles):
             p.draw(screen)
-            p.update()
+            p.update(dt)
             if p.life < 0:
                 self.particles.remove(p)
 
@@ -90,17 +90,17 @@ class Player():
         #health bar
         pygame.draw.rect(screen, (0, 100, 50), (self.x + self.w/2 - self.health/4, self.y - 20, self.health/2, 10))
 
-    def update(self, blocks, inputs, doubleInput):
+    def update(self, blocks, inputs, doubleInput, dt):
         self.angle = lerp(self.angle, self.angleTo, 0.15)
-        self.frame += 1
+        self.frame += dt
 
         if self.y > 10000:
             self.respawn()
             self.health -= 50
 
         # move then check for collisions on the y axis
-        self.y += self.yVel
-        self.yVel += GRAVITY
+        self.y += self.yVel * dt
+        self.yVel += GRAVITY * dt
 
         for block in blocks:
             if pygame.Rect(self.x, self.y, self.w, self.h).colliderect(block.rect):
@@ -119,17 +119,18 @@ class Player():
 
         # move then check for collisions on the x axis
         if self.inputMap[1] in inputs:
-            if self.frame%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
-            self.xVel -= self.acceleration
+            if int(self.frame)%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
+            
+            self.xVel -= self.acceleration * dt
             if self.inputMap[1] in doubleInput: 
                 self.x -= 200
                 self.camera.shake += 5
                 self.angleTo -= 360
             self.dir = 0
         if self.inputMap[3] in inputs:
-            if self.frame%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
+            if int(self.frame)%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
 
-            self.xVel += self.acceleration
+            self.xVel += self.acceleration * dt
             if self.inputMap[3] in doubleInput: 
                 self.x += 200
                 self.camera.shake += 5
@@ -138,7 +139,7 @@ class Player():
         
         
         self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
-        self.x += self.xVel
+        self.x += self.xVel * dt
         self.xVel *= 1 - self.friction
 
         for block in blocks:
@@ -161,7 +162,7 @@ class Player():
             self.doubleJump = False
         
 
-    def handleBullets(self, inputs, bulletList):
+    def handleBullets(self, inputs, bulletList, dt):
         for b in bulletList:
             if b.shotBy != self and pygame.Rect(self.x, self.y, self.w, self.h).collidepoint(b.x, b.y):
                 bulletList.remove(b)
@@ -173,5 +174,5 @@ class Player():
             self.reload = self.reloadTime
             
 
-        self.reload -= 1
+        self.reload -= 1 * dt
         

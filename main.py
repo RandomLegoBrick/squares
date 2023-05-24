@@ -3,7 +3,7 @@ from pygame.locals import *
 from modules.constants import *
 from modules import player, blocks, bullets
 from modules.functions import *
-import random
+import random, time
 
 ### Enviornment Variables ###
 pygame.init()
@@ -62,12 +62,20 @@ def textCentered(msg, x, y, size, color):
 def drawMap():
     screen.blit(map_textures["grassy"]["main"], (width/2-(32 * PIXEL_SIZE), height/2-(3 * PIXEL_SIZE)))
 
+prev_time = time.time()
+startTime = time.time()
+xpos = 0
+
 while running:
+    # time dependancy
+    now = time.time()
+    dt = (now - prev_time) * 60
+    prev_time = now
+    
+
     for e in pygame.event.get():
         if e.type == QUIT:
             running = False
-        if e.type == VIDEORESIZE:
-            width, height = e.w, e.h
 
         if e.type == KEYDOWN:
             inputs[e.key] = True
@@ -90,12 +98,12 @@ while running:
 
     for bullet in bulletList:
         bullet.draw(screen)
-        bullet.update()
+        bullet.update(dt)
 
     for n, p in enumerate(players):
-        p.draw(screen)
-        p.update(mapBlocks, inputs, doubleInput)
-        p.handleBullets(inputs, bulletList)
+        p.draw(screen, dt)
+        p.update(mapBlocks, inputs, doubleInput, dt)
+        p.handleBullets(inputs, bulletList, dt)
 
         if(p.health <= 0):
             players.pop(n)
@@ -125,6 +133,6 @@ while running:
 
     window.blit(screen, (camera.x, camera.y))
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(FPS_TARGET)
 
 pygame.quit()
