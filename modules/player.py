@@ -9,10 +9,11 @@ def dist(x1, y1, x2, y2):
     return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
 class Player():
-    def __init__(self, startPos, color, inputMap, bulletClass, name):
+    def __init__(self, startPos, color, inputMap, bulletClass, name, image):
         self.startX = startPos[0]
         self.startY = startPos[1]
-        self.name = name
+        self.name = name.capitalize()
+        self.image = image
 
         # position and velocity
         self.x = self.startX
@@ -26,8 +27,8 @@ class Player():
         self.friction = 0.2
         
         # size
-        self.w = 50
-        self.h = 50
+        self.w = PLAYER_SIZE
+        self.h = PLAYER_SIZE
 
         # color
         self.color = color
@@ -48,7 +49,9 @@ class Player():
         self.xVel = 0
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.w, self.h))
+        playerImg = pygame.transform.flip(self.image, False if self.dir < 0 else True, False)
+
+        screen.blit(playerImg, (self.x, self.y))
         #health bar
         pygame.draw.rect(screen, (0, 100, 50), (self.x + self.w/2 - self.health/4, self.y - 20, self.health/2, 10))
 
