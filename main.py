@@ -136,14 +136,28 @@ while running:
     
     ## Get average position of all players
     playerPos = [0, 0]
+    cameraFollowing = 0
     for p in players:
-        playerPos[0] += p.x
-        playerPos[1] += p.y
-    playerPos = [playerPos[0]/len(players), playerPos[1]/len(players)]
+        if dist(p.x, p.y, WIDTH/2, HEIGHT/2) < 1000:
+            playerPos[0] += p.x
+            playerPos[1] += p.y
+            cameraFollowing += 1
+
+    if cameraFollowing: 
+
+        playerPos = [playerPos[0]/cameraFollowing, playerPos[1]/cameraFollowing]
     
-    camera.shake = int(camera.shake)
-    camera.x = lerp(camera.x, -playerPos[0] + WIDTH/2, 0.1) + random.randint(-camera.shake, camera.shake)
-    camera.y = lerp(camera.y,  -playerPos[1] + HEIGHT/2, 0.1) + random.randint(-camera.shake, camera.shake)
+        camera.shake = int(camera.shake)
+        camera.x = lerp(camera.x, -playerPos[0] + WIDTH/2, 0.1) + random.randint(-camera.shake, camera.shake)
+        camera.y = lerp(camera.y,  -playerPos[1] + HEIGHT/2, 0.1) + random.randint(-camera.shake, camera.shake)
+
+        camera.x = clamp(camera.x, -WIDTH/2, WIDTH/2)
+        camera.y = clamp(camera.y, -HEIGHT/2, HEIGHT/2)
+    else:
+        camera.x = lerp(camera.x, 0, 0.1)
+        camera.y = lerp(camera.y, 0, 0.1)
+
+    
     camera.shake = clamp(camera.shake - 0.1, 0, 20)
 
     window.blit(screen, (camera.x, camera.y))
