@@ -136,6 +136,7 @@ class Player():
                 self.dashAnimFrame = -1
 
         # move then check for collisions on the y axis
+        py = self.y
         self.y += self.yVel * dt
         self.yVel += GRAVITY * dt
 
@@ -149,7 +150,7 @@ class Player():
 
                 self.yVel = 0
 
-                if self.y < block.rect.y:
+                if py < block.rect.y:
                     self.y = block.rect.y - self.h
                     self.onBlock = True
                     
@@ -183,6 +184,7 @@ class Player():
             self.dashDir = self.dir
         
         #self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
+        px = self.x
         self.x += self.xVel * dt
 
         for block in blocks:
@@ -190,7 +192,7 @@ class Player():
                 self.xVel = 0
                 
 
-                if self.x < block.rect.x:
+                if px < block.rect.x:
                     self.x = block.rect.x - self.w
                 else:
                     self.x = block.rect.x + block.rect.w

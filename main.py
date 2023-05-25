@@ -7,10 +7,12 @@ import random, time
 
 ### Enviornment Variables ###
 pygame.init()
-window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.DOUBLEBUF)
+SCREEN_WIDTH, SCREEN_HEIGHT = window.get_size()
 clock = pygame.time.Clock()
 running = True
 screen = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
+
 
 
 ### Input Variables ###
@@ -51,9 +53,10 @@ grenadeList = []
 mapBlocks = [blocks.Block((WIDTH/2 - 32 * PIXEL_SIZE, HEIGHT/2, 64 * PIXEL_SIZE, PIXEL_SIZE)), 
              blocks.Block((WIDTH/2 - 31 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
              blocks.Block((WIDTH/2 - 29 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
-             blocks.Block((WIDTH/2 - 24 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),]
-players = [player.Player((WIDTH/2 - 150, 300), (255, 50, 50), [K_w, K_a, K_s, K_d], bulletList, grenadeList, PLAYER1), 
-           player.Player((WIDTH/2 + 150, 300), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bulletList, grenadeList, PLAYER2)]
+             blocks.Block((WIDTH/2 - 24 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),
+             blocks.Block((WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, HEIGHT/2-(10 * PIXEL_SIZE), PIXEL_SIZE*32, PIXEL_SIZE*5))]
+players = [player.Player((WIDTH/2 - 150, HEIGHT/2 - 50), (255, 50, 50), [K_w, K_a, K_s, K_d], bulletList, grenadeList, PLAYER1), 
+           player.Player((WIDTH/2 + 150, HEIGHT/2 - 50), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bulletList, grenadeList, PLAYER2)]
 
 
 def textCentered(msg, x, y, size, color):
@@ -66,6 +69,8 @@ def textCentered(msg, x, y, size, color):
 
 def drawMap():
     screen.blit(map_textures["grassy"]["main"], (WIDTH/2-(32 * PIXEL_SIZE), HEIGHT/2-(3 * PIXEL_SIZE)))
+    screen.blit(map_textures["grassy"]["secondary"], (WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, 
+                                                      HEIGHT/2-(10 * PIXEL_SIZE) - PIXEL_SIZE*10))
 
 prev_time = time.time()
 startTime = time.time()
@@ -96,10 +101,11 @@ while running:
         elif e.type == KEYUP and e.key in inputs:
             del inputs[e.key]
     
-    window.fill(BACKGROUND)
-    window.blit(map_textures["grassy"]["background"], (WIDTH/2-(64 * PIXEL_SIZE) + camera.x/10, 
-                                                       HEIGHT/2-(40 * PIXEL_SIZE + camera.y/10)))
-    screen.fill((0, 0, 0, 0))
+    
+    window.blit(map_textures["grassy"]["background"], ((WIDTH/2)-(128 * PIXEL_SIZE) + camera.x/5, 
+                                                       (HEIGHT/2)-(64 * PIXEL_SIZE) + camera.y/5))
+    screen.fill([0, 0, 0, 0])
+    
     
     drawMap()
 
@@ -118,7 +124,7 @@ while running:
             players.pop(n)
     
     if len(players) == 1:
-        textCentered(f"{players[0].name} wins!", WIDTH/2, 300, 100, (0, 0, 0))
+        textCentered(f"{players[0].name} wins!", WIDTH/2, HEIGHT/2 - 300, 100, (0, 0, 0))
 
     for grenade in reversed(grenadeList):
         grenade.draw(screen)
@@ -138,7 +144,7 @@ while running:
     playerPos = [0, 0]
     cameraFollowing = 0
     for p in players:
-        if dist(p.x, p.y, WIDTH/2, HEIGHT/2) < 1000:
+        if dist(p.x, p.y, WIDTH/2, HEIGHT/2) < 2000:
             playerPos[0] += p.x
             playerPos[1] += p.y
             cameraFollowing += 1
@@ -148,14 +154,12 @@ while running:
         playerPos = [playerPos[0]/cameraFollowing, playerPos[1]/cameraFollowing]
     
         camera.shake = int(camera.shake)
-        camera.x = lerp(camera.x, -playerPos[0] + WIDTH/2, 0.1) + random.randint(-camera.shake, camera.shake)
-        camera.y = lerp(camera.y,  -playerPos[1] + HEIGHT/2, 0.1) + random.randint(-camera.shake, camera.shake)
+        camera.x = lerp(camera.x, -playerPos[0] + SCREEN_WIDTH/2, 0.1) + random.randint(-camera.shake, camera.shake)
+        camera.y = lerp(camera.y,  -playerPos[1] + SCREEN_HEIGHT/2, 0.1) + random.randint(-camera.shake, camera.shake)
 
-        camera.x = clamp(camera.x, -WIDTH/2, WIDTH/2)
-        camera.y = clamp(camera.y, -HEIGHT/2, HEIGHT/2)
     else:
-        camera.x = lerp(camera.x, 0, 0.1)
-        camera.y = lerp(camera.y, 0, 0.1)
+        camera.x = lerp(camera.x, -SCREEN_WIDTH/2, 0.1)
+        camera.y = lerp(camera.y, -SCREEN_HEIGHT/2, 0.1)
 
     
     camera.shake = clamp(camera.shake - 0.1, 0, 20)
