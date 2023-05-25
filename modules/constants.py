@@ -1,4 +1,4 @@
-BACKGROUND = (255, 255, 255)
+BACKGROUND = (245, 250, 255)
 GRAVITY = 1
 PIXEL_SIZE = 16
 DOUBLE_STROKE_TICK = 250
@@ -13,6 +13,7 @@ PLAYER2 = "blueberry"
 map_textures = {
     "grassy" : {
         "main" : "assets/maps/grassy/main_platform.png",
+        "background" :  "assets/maps/grassy/background.png",
     }
 }
 

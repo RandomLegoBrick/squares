@@ -26,7 +26,7 @@ def load(path, pixel_size=PIXEL_SIZE):
 
 for current_map in map_textures:
     for texture in map_textures[current_map]:
-        map_textures[current_map][texture] = load(map_textures[current_map][texture], pixel_size=PIXEL_SIZE*2 if texture == "background" else PIXEL_SIZE)
+        map_textures[current_map][texture] = load(map_textures[current_map][texture], pixel_size=PIXEL_SIZE)
 
 for current_player in player_textures:
     player_textures[current_player] = load(player_textures[current_player], pixel_size=6)
@@ -97,7 +97,9 @@ while running:
             del inputs[e.key]
     
     window.fill(BACKGROUND)
-    screen.fill(BACKGROUND)
+    window.blit(map_textures["grassy"]["background"], (WIDTH/2-(64 * PIXEL_SIZE) + camera.x/10, 
+                                                       HEIGHT/2-(40 * PIXEL_SIZE + camera.y/10)))
+    screen.fill((0, 0, 0, 0))
     
     drawMap()
 
