@@ -3,6 +3,7 @@ from modules.constants import *
 import math
 from modules.functions import *
 from random import randint
+from modules import bullets
 
 class Particle():
     def __init__(self, x, y, color=(78, 164, 95)):
@@ -30,7 +31,10 @@ class Particle():
         self.life -= 1
 
 class Player():
-    def __init__(self, startPos, color, inputMap, bulletClass, name, image, camera):
+    def __init__(self, startPos, color, inputMap, bulletList, grenadeList, name, image, camera):
+        self.bulletList = bulletList
+        self.grenadeList = grenadeList
+
         self.startX = startPos[0]
         self.startY = startPos[1]
         self.name = name.capitalize()
@@ -46,7 +50,7 @@ class Player():
         self.jumpVel = -20
         self.acceleration = 1.5
         self.maxSpeed = 5
-        self.friction = 0.2
+        self.friction = 0.3
         
         # size
         self.w = PLAYER_SIZE
@@ -58,10 +62,9 @@ class Player():
         self.onBlock = False
         self.doubleJump = True
         self.inputMap = inputMap
-        self.bulletClass = bulletClass
         self.reload = 0
         self.reloadTime = 10
-        self.dir = 0
+        self.dir = -1 if self.x < WIDTH/2 else 1
         self.health = 100
         self.angle = 0
         self.angleTo = 0
@@ -82,7 +85,7 @@ class Player():
                 self.particles.remove(p)
 
         playerImg = self.image.copy()
-        if int(self.angle)%360 != 0: playerImg = pygame.transform.rotate(playerImg, int(self.angle))
+        if int(self.angle-1)%360 != 0: playerImg = pygame.transform.rotate(playerImg, int(self.angle))
         playerImg = pygame.transform.flip(playerImg, False if self.dir < 0 else True, False)
         
         
@@ -105,6 +108,7 @@ class Player():
         for block in blocks:
             if pygame.Rect(self.x, self.y, self.w, self.h).colliderect(block.rect):
                 
+                self.xVel *= 1 - self.friction
                 if self.yVel > 25:
                     self.camera.shake += self.yVel/2
 
@@ -118,33 +122,34 @@ class Player():
                     self.y = block.rect.y + block.rect.h
 
         # move then check for collisions on the x axis
-        if self.inputMap[1] in inputs:
+        if self.inputMap[1] in inputs and self.xVel > -self.maxSpeed:
             if int(self.frame)%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
             
             self.xVel -= self.acceleration * dt
-            if self.inputMap[1] in doubleInput: 
-                self.x -= 200
-                self.camera.shake += 5
-                self.angleTo -= 360
-            self.dir = 0
-        if self.inputMap[3] in inputs:
+            self.dir = 1
+        if self.inputMap[3] in inputs and self.xVel < self.maxSpeed:
             if int(self.frame)%8 == 0 and self.onBlock: self.particles.append(Particle(self.x+randint(0, self.w), self.y+self.h))
 
             self.xVel += self.acceleration * dt
-            if self.inputMap[3] in doubleInput: 
+            self.dir = -1
+        
+        if self.inputMap[3] in doubleInput: 
                 self.x += 200
                 self.camera.shake += 5
                 self.angleTo -= 360
-            self.dir = -math.pi
         
+        if self.inputMap[1] in doubleInput: 
+                self.x -= 200
+                self.camera.shake += 5
+                self.angleTo -= 360
         
-        self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
+        #self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
         self.x += self.xVel * dt
-        self.xVel *= 1 - self.friction
 
         for block in blocks:
             if pygame.Rect(self.x, self.y, self.w, self.h).colliderect(block.rect):
                 self.xVel = 0
+                
 
                 if self.x < block.rect.x:
                     self.x = block.rect.x - self.w
@@ -162,15 +167,28 @@ class Player():
             self.doubleJump = False
         
 
-    def handleBullets(self, inputs, bulletList, dt):
-        for b in bulletList:
+    def handleBullets(self, inputs, doubleInputs, dt):
+        for b in self.bulletList:
             if b.shotBy != self and pygame.Rect(self.x, self.y, self.w, self.h).collidepoint(b.x, b.y):
-                bulletList.remove(b)
+                self.bulletList.remove(b)
                 self.health -= 5
                 self.camera.shake += 5
-        
-        if self.inputMap[2] in inputs and self.reload < 0:
-            bulletList.append(self.bulletClass(self.x+self.w/2, self.y+self.h/2, self.dir, self))
+
+        for g in self.grenadeList:
+            d = dist(self.x+self.w/2, self.y+self.h/2, g.x+g.size/2, g.y+g.size/2) < g.blastRadius
+            if int(g.timer) == 7*4 and d:
+                angle = math.atan2((self.y+self.h/2) - (g.y+g.size/2), 
+                                   (self.x+self.w/2) - (g.x+g.size/2))
+                self.xVel += math.cos(angle) * 5
+                self.yVel += math.sin(angle) * 10
+                self.health -= clamp(d, g.minDamage, g.maxDamage)
+
+                
+
+        if self.inputMap[2] in doubleInputs:
+            self.grenadeList.append(bullets.Grenade(self.x, self.y, self.dir, self))
+        elif self.inputMap[2] in inputs and self.reload < 0:
+            self.bulletList.append(bullets.Bullet(self.x+self.w/2, self.y+self.h/2, self.dir, self))
             self.reload = self.reloadTime
             
 

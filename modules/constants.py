@@ -4,6 +4,11 @@ PIXEL_SIZE = 16
 DOUBLE_STROKE_TICK = 250
 PLAYER_SIZE = 48
 FPS_TARGET = 120
+WIDTH, HEIGHT = 1920, 1080
+
+## Temp
+PLAYER1 = "orange"
+PLAYER2 = "blueberry"
 
 map_textures = {
     "grassy" : {
@@ -16,6 +21,7 @@ player_textures = {
     "blueberry" : "assets/players/blueberry.png",
     "red" : "assets/players/red.png",
     "orange" : "assets/players/orange.png",
+    "flamey" : "assets/players/flamey.png",
 }
 
 weapon_textures = {
@@ -23,20 +29,28 @@ weapon_textures = {
     "grenade_standard" : "assets/weapons/grenades/grenade_standard.png",
 }
 
+explosion_textures = [
+    "assets/weapons/effects/explosion_0.png",
+]
+
 BULLET_STAT_TABLE = {
-    "standard" : {
+    "bullet_standard" : {
         "velocity" : 50,
         "damage" : 5,
         "reload" : 10,
     },
-    "heavy" : {
+    "bullet_heavy" : {
         "velocity" : 20,
         "damage" : 15,
         "reload" : 30,
     },
-    "light" : {
+    "bullet_light" : {
         "velocity" : 80,
         "damage" : 2,
         "reload" : 5,
+    },
+    "grenade_standard" : {
+        "velocity" : 10,
+        "damage" : 60
     }
 }

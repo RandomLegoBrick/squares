@@ -20,9 +20,12 @@ Todo (Will add more over time):
         - [x] Blueberry
         - [x] Red
         - [x] Orange
+        - [x] flamey
         - [ ] Controller
         - Think of more...
-    - Guns
+    - Weapons
+        - [x] basic gun
+        - [x] grenade
     - Menu Art
 - Menus
     - [ ] Main Menu
