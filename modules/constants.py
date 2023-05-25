@@ -23,6 +23,9 @@ player_textures = {
     "orange" : "assets/players/orange.png",
     "flamey" : "assets/players/flamey.png",
 }
+player_effects = {
+    "dash" : "assets/players/effects/dash.png",
+}
 
 weapon_textures = {
     "bullet_standard" : "assets/weapons/bullets/bullet_standard.png",

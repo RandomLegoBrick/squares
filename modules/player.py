@@ -5,6 +5,27 @@ from modules.functions import *
 from random import randint
 from modules import bullets
 
+
+dash_frames = []
+camera = None
+textures = None
+
+def init(player_effects, player_textures, cam):
+
+    global textures
+    global camera
+
+    textures = player_textures
+    camera = cam
+
+    sprite = pygame.image.load(player_effects["dash"])
+    for i in range(5):
+        surf = pygame.surface.Surface((16, 8)).convert_alpha()
+        surf.fill((0, 0, 0, 0))
+        surf.blit(sprite, (0, 0), (i*16, 0, 16, 8))
+        dash_frames.append(pygame.transform.scale(surf, (16 * 6, 8 * 6)))
+
+
 class Particle():
     def __init__(self, x, y, color=(78, 164, 95)):
         self.size = randint(6, 8)
@@ -30,16 +51,15 @@ class Particle():
         
         self.life -= 1
 
+
 class Player():
-    def __init__(self, startPos, color, inputMap, bulletList, grenadeList, name, image, camera):
+    def __init__(self, startPos, color, inputMap, bulletList, grenadeList, name):
         self.bulletList = bulletList
         self.grenadeList = grenadeList
 
         self.startX = startPos[0]
         self.startY = startPos[1]
         self.name = name.capitalize()
-        self.image = image
-        self.camera = camera
 
         # position and velocity
         self.x = self.startX
@@ -70,12 +90,16 @@ class Player():
         self.angleTo = 0
         self.particles = []
         self.frame = 0
+        self.dashAnimFrame = -1
+        self.dashDir = self.dir
+        self.image = textures[name]
 
     def respawn(self):
         self.x = self.startX
         self.y = self.startY
         self.yVel = 0
         self.xVel = 0
+        
 
     def draw(self, screen, dt):
         for p in reversed(self.particles):
@@ -83,6 +107,11 @@ class Player():
             p.update(dt)
             if p.life < 0:
                 self.particles.remove(p)
+
+        if self.dashAnimFrame >= 0:
+            img = dash_frames[self.dashAnimFrame] if self.dashDir == -1 else pygame.transform.flip(dash_frames[self.dashAnimFrame], True, False)
+            screen.blit(img, (self.x + ((-self.w*2 - 12) if self.dashDir == -1 else (self.w + 12)), self.y))
+            
 
         playerImg = self.image.copy()
         if int(self.angle-1)%360 != 0: playerImg = pygame.transform.rotate(playerImg, int(self.angle))
@@ -101,6 +130,11 @@ class Player():
             self.respawn()
             self.health -= 50
 
+        if self.dashAnimFrame >= 0 and int(self.frame)%5 == 0:
+            self.dashAnimFrame += 1
+            if self.dashAnimFrame > 4:
+                self.dashAnimFrame = -1
+
         # move then check for collisions on the y axis
         self.y += self.yVel * dt
         self.yVel += GRAVITY * dt
@@ -110,7 +144,8 @@ class Player():
                 
                 self.xVel *= 1 - self.friction
                 if self.yVel > 25:
-                    self.camera.shake += self.yVel/2
+                    
+                    camera.shake += self.yVel/2
 
                 self.yVel = 0
 
@@ -134,14 +169,18 @@ class Player():
             self.dir = -1
         
         if self.inputMap[3] in doubleInput: 
-                self.x += 200
-                self.camera.shake += 5
-                self.angleTo -= 360
-        
+            self.x += 200
+            camera.shake += 5
+            self.angleTo -= 360
+            self.dashAnimFrame = 0
+            self.dashDir = self.dir
+
         if self.inputMap[1] in doubleInput: 
-                self.x -= 200
-                self.camera.shake += 5
-                self.angleTo -= 360
+            self.x -= 200
+            camera.shake += 5
+            self.angleTo -= 360
+            self.dashAnimFrame = 0
+            self.dashDir = self.dir
         
         #self.xVel = clamp(self.xVel, -self.maxSpeed, self.maxSpeed)
         self.x += self.xVel * dt
@@ -172,7 +211,7 @@ class Player():
             if b.shotBy != self and pygame.Rect(self.x, self.y, self.w, self.h).collidepoint(b.x, b.y):
                 self.bulletList.remove(b)
                 self.health -= 5
-                self.camera.shake += 5
+                camera.shake += 5
 
         for g in self.grenadeList:
             d = dist(self.x+self.w/2, self.y+self.h/2, g.x+g.size/2, g.y+g.size/2) < g.blastRadius

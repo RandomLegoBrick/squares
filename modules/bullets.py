@@ -46,7 +46,6 @@ class Grenade():
         self.y = y
         self.yVel = -BULLET_STAT_TABLE["grenade_"+type]["velocity"]
         self.xVel = dir * BULLET_STAT_TABLE["grenade_"+type]["velocity"]
-        print(self.xVel, self.yVel)
         self.shotBy = shotBy
         self.type = type
         self.damage = BULLET_STAT_TABLE["grenade_"+type]["damage"]

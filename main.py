@@ -33,13 +33,17 @@ for current_player in player_textures:
 
 for current_weapon in weapon_textures:
     weapon_textures[current_weapon] = load(weapon_textures[current_weapon], pixel_size=4)
-bullets.init(weapon_textures)
 
 ### Camera ###
 class camera():
     x = 0
     y = 0
     shake = 0
+
+bullets.init(weapon_textures)
+player.init(player_effects, player_textures, camera)
+
+
 
 ### Game State Variables ###
 bulletList = []
@@ -48,8 +52,8 @@ mapBlocks = [blocks.Block((WIDTH/2 - 32 * PIXEL_SIZE, HEIGHT/2, 64 * PIXEL_SIZE,
              blocks.Block((WIDTH/2 - 31 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
              blocks.Block((WIDTH/2 - 29 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
              blocks.Block((WIDTH/2 - 24 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),]
-players = [player.Player((WIDTH/2 - 150, 300), (255, 50, 50), [K_w, K_a, K_s, K_d], bulletList, grenadeList, PLAYER1, player_textures[PLAYER1], camera), 
-           player.Player((WIDTH/2 + 150, 300), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bulletList, grenadeList, PLAYER2, player_textures[PLAYER2], camera)]
+players = [player.Player((WIDTH/2 - 150, 300), (255, 50, 50), [K_w, K_a, K_s, K_d], bulletList, grenadeList, PLAYER1), 
+           player.Player((WIDTH/2 + 150, 300), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bulletList, grenadeList, PLAYER2)]
 
 
 def textCentered(msg, x, y, size, color):
