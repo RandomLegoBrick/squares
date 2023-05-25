@@ -216,10 +216,10 @@ class Player():
         for g in self.grenadeList:
             d = dist(self.x+self.w/2, self.y+self.h/2, g.x+g.size/2, g.y+g.size/2) < g.blastRadius
             if int(g.timer) == 7*4 and d:
-                angle = math.atan2((self.y+self.h/2) - (g.y+g.size/2), 
+                angle = math.atan2((self.y) - (g.y+g.size/2), 
                                    (self.x+self.w/2) - (g.x+g.size/2))
-                self.xVel += math.cos(angle) * 5
-                self.yVel += math.sin(angle) * 10
+                self.xVel += math.cos(angle) * 10
+                self.yVel += math.sin(angle) * 20
                 self.health -= clamp(d, g.minDamage, g.maxDamage)
 
                 

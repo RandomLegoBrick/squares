@@ -50,16 +50,20 @@ class Grenade():
         self.type = type
         self.damage = BULLET_STAT_TABLE["grenade_"+type]["damage"]
         self.img = weapon_textures["grenade_"+self.type]
-        self.size = self.img.get_width()
+        self.size = 8*4
         self.friction = 0.2
         self.timer = 100
-        self.blastRadius = 100
-        self.minDamage = 20
+        self.blastRadius = 120
+        self.minDamage = 40
         self.maxDamage = 60
+        self.angle = 0
+
     
     def draw(self, screen: pygame.Surface):
         if self.timer > 4*4: ## hide the grenade 4 frames into the explosion
-            screen.blit(self.img, (self.x, self.y))
+            img = pygame.transform.rotate(self.img, self.angle)
+            
+            screen.blit(img, (self.x, self.y))
         
         if self.timer < 8*4:
             screen.blit(explosion_frames[7-int(self.timer/4)], (self.x-explosion_frames[0].get_width()/2 + self.size/2, 
@@ -67,6 +71,7 @@ class Grenade():
     
     def update(self, blocks, camera, players, dt):
         self.timer -= 1 * dt
+        self.angle += self.xVel
 
         if int(self.timer) == 8*4:
             camera.shake += 10

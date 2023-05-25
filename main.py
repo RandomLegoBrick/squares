@@ -32,7 +32,7 @@ for current_player in player_textures:
     player_textures[current_player] = load(player_textures[current_player], pixel_size=6)
 
 for current_weapon in weapon_textures:
-    weapon_textures[current_weapon] = load(weapon_textures[current_weapon], pixel_size=4)
+    weapon_textures[current_weapon] = load(weapon_textures[current_weapon], pixel_size=6)
 
 ### Camera ###
 class camera():
