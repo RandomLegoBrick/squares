@@ -1,9 +1,22 @@
 ## Work In Progress
-A smash-bros-esque fighting game writen in python using pygame.
+A smash-bros-esque fighting game writen in python using pygame. Name once I come up with a better one :P
 
 ## Instructions
-*Note: these mappings are temporary until menus are created*
+*Note: these are subject to change as the project evolves*
 
+## Running
+make sure you have python and pygame installed first
+
+```
+git clone https://github.com/RandomLegoBrick/squares.git
+cd squares
+python main.py
+```
+
+
+
+
+## Playing the game
 Player 1: 
 - `WAD` to move 
 - Double tap `W` or `D` to dash
