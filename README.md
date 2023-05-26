@@ -1,5 +1,5 @@
 ## Work In Progress
-A smash-bros-esque fighting game writen in python using pygame. Name once I come up with a better one :P
+A smash-bros-esque fighting game writen in python using pygame. Name will change once I come up with a better one :P
 
 ## Instructions
 *Note: these are subject to change as the project evolves*
@@ -41,7 +41,7 @@ Players can be added by copy/pasting the following code into the `players` list 
 
 `player.Player((WIDTH/2, HEIGHT/2 - 50), [K_i, K_j, K_k, K_l], "flamey"),`
 
-The first argument is a tuple containing the player's x and y cordinates, the second arument is a list containing the keymap for the players in the order "UP, LEFT, DOWN, RIGHT". The final argument is they player's skin which can be any of the values in the **Player Skins** section.
+The first argument is a tuple containing the player's x and y cordinates. The second arument is a list containing the keymap for the players in the order "UP, LEFT, DOWN, RIGHT". The final argument is they player's skin which can be any of the values in the **Player Skins** section.
 
 
 Todo (Will add more over time):
