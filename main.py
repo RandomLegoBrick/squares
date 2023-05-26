@@ -42,21 +42,28 @@ class camera():
     y = 0
     shake = 0
 
-bullets.init(weapon_textures)
-player.init(player_effects, player_textures, camera)
-
-
 
 ### Game State Variables ###
 bulletList = []
 grenadeList = []
+
+bullets.init(weapon_textures)
+player.init(player_effects, player_textures, camera, bulletList, grenadeList)
+
 mapBlocks = [blocks.Block((WIDTH/2 - 32 * PIXEL_SIZE, HEIGHT/2, 64 * PIXEL_SIZE, PIXEL_SIZE)), 
              blocks.Block((WIDTH/2 - 31 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
              blocks.Block((WIDTH/2 - 29 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
              blocks.Block((WIDTH/2 - 24 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),
              blocks.Block((WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, HEIGHT/2-(10 * PIXEL_SIZE), PIXEL_SIZE*32, PIXEL_SIZE*5))]
-players = [player.Player((WIDTH/2 - 150, HEIGHT/2 - 50), (255, 50, 50), [K_w, K_a, K_s, K_d], bulletList, grenadeList, PLAYER1), 
-           player.Player((WIDTH/2 + 150, HEIGHT/2 - 50), (50, 255, 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], bulletList, grenadeList, PLAYER2)]
+
+## Edit player stuff here ##
+players = [player.Player((WIDTH/2 - 150, HEIGHT/2 - 50), [K_w, K_a, K_s, K_d], "duck"), 
+           player.Player((WIDTH/2 + 150, HEIGHT/2 - 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], "blueberry"),
+           # Add Players here v
+           
+           # Add Players here ^
+           ]
+
 
 
 def textCentered(msg, x, y, size, color):

@@ -1,6 +1,36 @@
 ## Work In Progress
 A smash-bros-esque fighting game writen in python using pygame.
 
+## Instructions
+*Note: these mappings are temporary until menus are created*
+
+Player 1: 
+- `WAD` to move 
+- Double tap `W` or `D` to dash
+- Press `S` to shoot
+- Double tap `S` to throw grenade
+
+Player 2: Arrow Keys to move
+- Double tap `Left` or `Right` to dash
+- Press `Down` to shoot
+- Double tap `Down` to throw grenade
+
+## Player Skins
+Current possible skins: (As of now, skins can be changed on lines 59-63 of `main.py`)
+- red
+- blueberry
+- orange
+- flamey
+- duck
+
+## Adding more players
+Players can be added by copy/pasting the following code into the `players` list located on line 59 of main.py.
+
+`player.Player((WIDTH/2, HEIGHT/2 - 50), [K_i, K_j, K_k, K_l], "flamey"),`
+
+The first argument is a tuple containing the player's x and y cordinates, the second arument is a list containing the keymap for the players in the order "UP, LEFT, DOWN, RIGHT". The final argument is they player's skin which can be any of the values in the **Player Skins** section.
+
+
 Todo (Will add more over time):
 - Gameplay
     - [x] Movement

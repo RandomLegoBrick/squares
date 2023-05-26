@@ -6,10 +6,6 @@ PLAYER_SIZE = 48
 FPS_TARGET = 120
 WIDTH, HEIGHT = 1920*2, 1080*2
 
-## Temp
-PLAYER1 = "orange"
-PLAYER2 = "blueberry"
-
 map_textures = {
     "grassy" : {
         "main" : "assets/maps/grassy/main_platform.png",

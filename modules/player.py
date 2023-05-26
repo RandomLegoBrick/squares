@@ -9,12 +9,19 @@ from modules import bullets
 dash_frames = []
 camera = None
 textures = None
+bulletList = []
+grenadeList = []
 
-def init(player_effects, player_textures, cam):
+def init(player_effects, player_textures, cam, bullets, grenades):
 
     global textures
     global camera
+    global bulletList
+    global grenadeList
 
+    bulletList = bullets
+    grenadeList = grenades
+    
     textures = player_textures
     camera = cam
 
@@ -53,7 +60,7 @@ class Particle():
 
 
 class Player():
-    def __init__(self, startPos, color, inputMap, bulletList, grenadeList, name):
+    def __init__(self, startPos, inputMap, name):
         self.bulletList = bulletList
         self.grenadeList = grenadeList
 
@@ -75,9 +82,6 @@ class Player():
         # size
         self.w = PLAYER_SIZE
         self.h = PLAYER_SIZE
-
-        # color
-        self.color = color
 
         self.onBlock = False
         self.doubleJump = True
