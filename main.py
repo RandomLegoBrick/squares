@@ -54,11 +54,16 @@ mapBlocks = [blocks.Block((WIDTH/2 - 32 * PIXEL_SIZE, HEIGHT/2, 64 * PIXEL_SIZE,
              blocks.Block((WIDTH/2 - 31 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE, 62 * PIXEL_SIZE, PIXEL_SIZE * 3)),
              blocks.Block((WIDTH/2 - 29 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 4, 58 * PIXEL_SIZE, PIXEL_SIZE * 2)),
              blocks.Block((WIDTH/2 - 24 * PIXEL_SIZE, HEIGHT/2 + PIXEL_SIZE * 6, 48 * PIXEL_SIZE, PIXEL_SIZE * 2)),
-             blocks.Block((WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, HEIGHT/2-(10 * PIXEL_SIZE), PIXEL_SIZE*32, PIXEL_SIZE*5))]
+             blocks.Block((WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, HEIGHT/2-(10 * PIXEL_SIZE), PIXEL_SIZE*32, PIXEL_SIZE*5)),
+             
+             #right island
+             blocks.Block((WIDTH/2-(14 * PIXEL_SIZE) + PIXEL_SIZE*35, HEIGHT/2-(6 * PIXEL_SIZE) - PIXEL_SIZE*15, PIXEL_SIZE * 28, PIXEL_SIZE*3)),
+             blocks.Block((WIDTH/2-(14 * PIXEL_SIZE) + PIXEL_SIZE*37, HEIGHT/2-(6 * PIXEL_SIZE) - PIXEL_SIZE*14, PIXEL_SIZE * 23, PIXEL_SIZE)),
+             ]  
 
 ## Edit player stuff here ##
-players = [player.Player((WIDTH/2 - 150, HEIGHT/2 - 50), [K_w, K_a, K_s, K_d], "duck"), 
-           player.Player((WIDTH/2 + 150, HEIGHT/2 - 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], "blueberry"),
+players = [player.Player((WIDTH/2 - 150, HEIGHT/2 - 50), [K_w, K_a, K_s, K_d], "orange"), 
+           player.Player((WIDTH/2 + 150, HEIGHT/2 - 50), [K_UP, K_LEFT, K_DOWN, K_RIGHT], "duck"),
            # Add Players here v
            
            # Add Players here ^
@@ -78,6 +83,8 @@ def drawMap():
     screen.blit(map_textures["grassy"]["main"], (WIDTH/2-(32 * PIXEL_SIZE), HEIGHT/2-(3 * PIXEL_SIZE)))
     screen.blit(map_textures["grassy"]["secondary"], (WIDTH/2-(16 * PIXEL_SIZE) - PIXEL_SIZE*55, 
                                                       HEIGHT/2-(10 * PIXEL_SIZE) - PIXEL_SIZE*10))
+    screen.blit(map_textures["grassy"]["right"], (WIDTH/2-(14 * PIXEL_SIZE) + PIXEL_SIZE*35, 
+                                                      HEIGHT/2-(6 * PIXEL_SIZE) - PIXEL_SIZE*20))
 
 prev_time = time.time()
 startTime = time.time()

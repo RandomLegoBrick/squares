@@ -10,6 +10,7 @@ map_textures = {
     "grassy" : {
         "main" : "assets/maps/grassy/main_platform.png",
         "secondary" : "assets/maps/grassy/secondary_platform.png",
+        "right" : "assets/maps/grassy/right_platform.png",
         "background" :  "assets/maps/grassy/background.png",
     }
 }
