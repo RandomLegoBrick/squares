@@ -12,7 +12,12 @@ map_textures = {
         "secondary" : "assets/maps/grassy/secondary_platform.png",
         "right" : "assets/maps/grassy/right_platform.png",
         "background" :  "assets/maps/grassy/background.png",
+        "left" : "assets/maps/grassy/left_platform.png",
     }
+}
+
+ui_textures = {
+    "logo" : "assets/UI/menu/logo.png",
 }
 
 player_textures = {

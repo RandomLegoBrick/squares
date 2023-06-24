@@ -63,6 +63,7 @@ class Player():
     def __init__(self, startPos, inputMap, name):
         self.bulletList = bulletList
         self.grenadeList = grenadeList
+        self.startPos = startPos
 
         self.startX = startPos[0]
         self.startY = startPos[1]
@@ -103,6 +104,17 @@ class Player():
         self.y = self.startY
         self.yVel = 0
         self.xVel = 0
+    
+    def reset(self):
+        self.x = self.startPos[0]
+        self.y = self.startPos[1]
+
+        self.xVel = 0
+        self.yVel = 0
+
+        self.particles = []
+        self.reloadTime = 10
+        self.onBlock = True
         
 
     def draw(self, screen, dt):
