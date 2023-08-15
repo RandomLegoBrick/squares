@@ -166,7 +166,7 @@ class Player():
 
                 self.yVel = 0
 
-                if py < block.rect.y:
+                if py < block.rect.y + block.rect.h/2:
                     self.y = block.rect.y - self.h
                     self.onBlock = True
                     
@@ -208,7 +208,7 @@ class Player():
                 self.xVel = 0
                 
 
-                if px < block.rect.x:
+                if px < block.rect.x + block.rect.w/2:
                     self.x = block.rect.x - self.w
                 else:
                     self.x = block.rect.x + block.rect.w
